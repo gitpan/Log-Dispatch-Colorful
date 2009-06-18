@@ -12,30 +12,30 @@ use Term::ANSIColor;
 
 Params::Validate::validation_options( allow_extra => 1 );
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 our %LEVELS;
 
 BEGIN {
-    foreach my $l (qw( debug info notice warning err error crit critical alert emerg emergency )) {
+    foreach my $level (qw( debug info notice warning err error crit critical alert emerg emergency )) {
         my $sub = sub {
             my $self = shift;
             my $messages;
             foreach my $arg (@_) {
                 if ( ref $arg ) {
-                    $arg = Dumper($arg);
+                    $messages = Dumper($arg);
                 }
                 $messages .= $arg || '';
             }
 
-            $self->log( level => $l, message => $messages );
+            $self->log( level => $level, message => $messages );
         };
 
-        $LEVELS{$l} = 1;
+        $LEVELS{$level} = 1;
 
         no strict 'refs';
         no warnings 'redefine';
-        *{ "Log::Dispatch::" . $l } = $sub;
+        *{ "Log::Dispatch::" . $level } = $sub;
     }
 }
 
@@ -60,29 +60,21 @@ sub new {
     $self->{stderr} = exists $p{stderr} ? $p{stderr} : 1;
 
     my @collbacks = $self->_get_callbacks(%p);
-    my $callbacks = [
-        sub {
-            my %p = @_;
+    unshift @collbacks, sub {
+        my %p = @_;
 
-            if  ( $self->{color}->{ $p{level} }->{text} ) {
-                $p{message}
-                    = color( $self->{color}->{ $p{level} }->{text} )
-                    . $p{message}
-                    . color('reset');
-            }
+        if ( $self->{color}->{ $p{level} }->{text} ) {
+            $p{message} = color( $self->{color}->{ $p{level} }->{text} ) . $p{message} . color('reset');
+        }
 
-            if ( $self->{color}->{ $p{level} }->{background} ) {
-                $p{message}
-                    = color( 'on_' . $self->{color}->{ $p{level} }->{background} )
-                    . $p{message}
-                    . color('reset');
-            }
+        if ( $self->{color}->{ $p{level} }->{background} ) {
+            $p{message} = color( 'on_' . $self->{color}->{ $p{level} }->{background} ) . $p{message} . color('reset');
+        }
 
-            $p{message};
-        },
-        @collbacks
-    ];
-    $self->{callbacks} = $callbacks;
+        $p{message};
+    };
+
+    $self->{callbacks} = \@collbacks;
 
     return $self;
 }

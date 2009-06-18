@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 4;
 
 use Log::Dispatch;
 use Log::Dispatch::Colorful;
@@ -36,7 +36,10 @@ $dispatcher->error('eeeeeeerrrrrrrrrrroooooooorrrrrrrr');
 ok $err =~ m{eeeeeeerrrrrrrrrrroooooooorrrrrrrr}xms, 'colorful error';
 
 my $data = { foo => 'bar' };
+is ref $data, 'HASH';
+
 $dispatcher->debug($data);
 
 ok $err =~ m!'foo' \s+ => \s+ 'bar'!xms, 'no debug';
+is ref $data, 'HASH';
 
