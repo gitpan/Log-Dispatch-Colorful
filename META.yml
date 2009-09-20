@@ -1,5 +1,5 @@
 ---
-abstract: 'Object for logging to screen .'
+abstract: 'Object for logging to screen.'
 author:
   - 'Daisuke Komatsu <vkg.taro@gmail.com>'
 build_requires:
@@ -22,8 +22,9 @@ no_index:
     - t
     - xt
 requires:
+  Filter::Util::Call: 0
   Log::Dispatch::Output: 0
   Params::Validate: 0
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.02
+version: 0.03

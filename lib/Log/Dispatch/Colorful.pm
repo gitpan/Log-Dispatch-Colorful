@@ -12,7 +12,7 @@ use Term::ANSIColor;
 
 Params::Validate::validation_options( allow_extra => 1 );
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 our %LEVELS;
 
@@ -111,7 +111,7 @@ __END__
 
 =head1 NAME
 
-Log::Dispatch::Colorful - Object for logging to screen .
+Log::Dispatch::Colorful - Object for logging to screen.
 
 =head1 SYNOPSIS
 
@@ -146,6 +146,11 @@ Log::Dispatch::Colorful - Object for logging to screen .
 =head1 DESCRIPTION
 
 Log::Dispatch::Colorful is provides an object for logging to the screen.
+
+=head1 ATTENTION
+
+this module is rewrite Log::Dispatch method for Dumper.
+if you don't need Dumper, you think about using L<Log::Dispatch::Screen::Color>.
 
 =head1 METHODS
 
